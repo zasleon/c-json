@@ -2,20 +2,25 @@
 #define INCLUDE_json_process_H
 
 
-#include "json/json.h"
-#include "json/reader.h"
-#include "json/writer.h"
-#include "json/value.h"
-#include "server_property.h"//ÎÒ×Ô¼ºµÄÆäËûº¯Êı
 
-//#pragma comment(lib,"lib_json_d.lib")//Á´½ÓĞèÒªµÄ¿âÎÄ¼ş
+
+
+#include "F:/JY/jsoncpp-src-0.5.0/jsonPP/include/json/json.h"
+//#include "F:/JY/jsoncpp-src-0.5.0/jsonPP/include/json/reader.h"
+//#include "F:/JY/jsoncpp-src-0.5.0/jsonPP/include/json/writer.h"
+//#include "F:/JY/jsoncpp-src-0.5.0/jsonPP/include/json/value.h"
+#pragma comment(lib,"F:\\JY\\jsoncpp-src-0.5.0\\jsonPP\\lib\\debug\\json.lib")//Á´½ÓĞèÒªµÄ¿âÎÄ¼ş
+using namespace std;
+
+
+
 
 /*===========================test================================
 ¿É½«ÒÔÏÂ´úÂë·ÅÈëmainº¯ÊıÖĞ²âÊÔ
 
 	//½«json¸ñÊ½×Ö·û´®´«Èë´´½¨µÄjson½á¹¹Ìå
 	Json::Value json_struct;//Âã´´½¨Ò»¸öjson¶ÔÏó
-	Json::FastWriter writer;//Âã½¨Ò»¸öjsonĞ´ÈëstringµÄ½Ó¿Ú
+	Json::FastF:\\JY\\jsoncpp-src-0.5.0\\jsonPP\\lib\\debugWriter writer;//Âã½¨Ò»¸öjsonĞ´ÈëstringµÄ½Ó¿Ú
 	json_struct["test1"]="sss";//Âã¸³Óèjson¶ÔÏóÊôĞÔÖµ
 	string kk=writer.write(json_struct);//Âã½«json¶ÔÏó×ª»¯Îªstring×Ö·û´®
 	char StrBuf[1000]={0};
@@ -80,12 +85,13 @@ class JSON_package
 {
 	private:
 		string json_string;//±£´æjsonÊı¾İ½á¹¹Ìå×ª±äÎª×Ö·û´®ºóµÄÄÚÈİ
+		char* json_string_point;
 		char* json_value;//´æ´¢ÏëÌáÈ¡µÄ±äÁ¿µÄ×Ö·û´®
 		Json::Value json_struct;//±£´æ³éÏóµÄjsonÊı¾İ½á¹¹Ìå
 
 
 		bool whether_process;//ÊÇ·ñ¶Ôjson½á¹¹Ìå´¦Àí¹ı,³õÊ¼ÎŞÄ¿±ê½¨Á¢Ê±Îªfalse£¬¾­¹ıÌí¼ÓÊı¾İ²Ù×÷ºó±äÎªtrue
-
+		bool whether_normal;//ÊÇ·ñÕı³££¬²»Õı³£²»´¦Àí
 	public:
 
 		void ini();//³õÊ¼»¯³£¹æ²Ù×÷
@@ -101,8 +107,10 @@ class JSON_package
 		//add_itemÊÇÔÚÍ¬Ò»¸ö{ }ÄÚÔö¼Ó"ÊôĞÔ"="Öµ"£¬»¥Ïà¼äÓÃ¶ººÅ¸ô¿ª
 		//¶øappendÊÇÔÚºóÃæ¶à¼Ó¸ö{}£¬¿ÉÒÔ½«Ç°ºóÁ½¸ö{ }ÊÓÎªÍ¬Ò»¸öÊı×éÄÚµÄÁ½¸ö²»Í¬³ÉÔ±
 
-		void add_item_array(string name,string value);//½«Ä³Ò»µ¥ÖµÒÔÊı×éÊı¾İ·½Ê½´æÈëarray_nameÊôĞÔÀï
+		void add_item_array(string name,string value);//½«Ä³Ò»µ¥ÖµÒÔÊı×éÊı¾İ·½Ê½´æÈëÊôĞÔÀï
+		void add_item_array(string name,int value);
 		void add_item_array(string array_name,string name,string value);//½«Ä³Ò»µ¥ÖµÒÔÊı×éÊı¾İ·½Ê½´æÈëarray_nameÊôĞÔÀï
+		void add_item_array(string array_name,string name,int value);//½«Ä³Ò»µ¥ÖµÒÔÊı×éÊı¾İ·½Ê½´æÈëarray_nameÊôĞÔÀï
 		void add_struct_array(Json::Value other_struct);
 		void add_struct_array(string array_name,Json::Value other_struct);//½«Ä³Ò»½á¹¹ÌåÒÔÊı×éÊı¾İ·½Ê½´æÈëarray_nameÊôĞÔÀï
 
@@ -133,6 +141,13 @@ void JSON_package::add_item_array(string name,string value)
 	json_struct.append(item);
 	whether_process=true;
 }
+void JSON_package::add_item_array(string name,int value)
+{
+	Json::Value item;
+	item[name]=value;
+	json_struct.append(item);
+	whether_process=true;
+}
 
 void JSON_package::add_item_array(string array_name,string name,string value)
 {
@@ -141,7 +156,13 @@ void JSON_package::add_item_array(string array_name,string name,string value)
 	json_struct[array_name].append(item);
 	whether_process=true;
 }
-
+void JSON_package::add_item_array(string array_name,string name,int value)
+{
+	Json::Value item;
+	item[name]=value;
+	json_struct[array_name].append(item);
+	whether_process=true;
+}
 
 
 
@@ -166,6 +187,7 @@ Json::Value JSON_package::get_json()
 }
 void JSON_package::ini()
 {
+	whether_normal=true;
 	json_value= new char[20];
 	json_string="";//×Ö·û´®ÄÚÈİÖÃ¿Õ
 }
@@ -186,11 +208,20 @@ JSON_package::JSON_package()
 JSON_package::JSON_package(char* StrBuf)
 {
 	ini();
+	
 	json_string=StrBuf;
 	Json::Reader reader;
-	Json::FastWriter writer;
-	if(!reader.parse(json_string, json_struct))//½«×Ö·û´®ÄÚÈİ×ª»¯Îª½á¹¹Ìå
-		cout<<"reader parse error[json½âÎö³ö´í!]:"<<strerror(errno)<<endl;
+	
+	if(StrBuf[0]=='{')//´ÖÂÔ¹ıÂË£¬ÓĞÊ±ºò´¿Êı×Ö×Ö·û´®Ò²»á±»parseÅĞ¶ÏÎªÕı³£json¸ñÊ½±¨ÎÄ£¬µ¼ÖÂÈ¡Öµ³ö´í
+	{
+		if(reader.parse(json_string, json_struct))//½«×Ö·û´®ÄÚÈİ×ª»¯Îª½á¹¹Ìå
+			;//cout<<"½âÎö³É¹¦!\n";
+		else
+			cout<<"[¿Í»§¶Ëjson±¨ÎÄ½âÎö³ö´í!]reader parse error:"<<strerror(errno)<<endl;
+	}
+	else
+		cout<<"´íÎójson±¨ÎÄ!\n";
+	
 	whether_process=true;
 }
 
@@ -201,6 +232,7 @@ const char* JSON_package::to_StrBuf()
 	//Json::Reader reader;
 	json_string=writer.write(json_struct);//½«½á¹¹ÌåÄÚÈİ×ª±äÎª×Ö·û´®ĞÎÊ½
 	const char* StrBuf=json_string.c_str();
+	
 	return StrBuf;
 }
  char* JSON_package::get_value(string name)
@@ -230,6 +262,14 @@ void JSON_package::add_item(string name,int value)//µ¥´¿ÎªÆäÌí¼ÓÊôĞÔ,Èç¹ûÖ®Ç°ÓĞ¹
 	whether_process=true;
 }
 
+void process_JSON_string(char* value)//json·µ»ØµÄvalue×Ö·û´®ÄÚÈİÍùÍù¿ªÍ·ºÍ½áÎ²ÊÇË«ÒıºÅÇÒºóÒ»¸öË«ÒıºÅºóÒÔ\n½áÎ²
+{
+	value[strlen(value)-2]='\0';//×îºóÒ»¸öÊÇ\n,µ¹ÊıµÚ¶ş¸öÊÇ\"£¬ËùÒÔ°Ñµ¹¶şÉèÎª\0
+
+	for(int j=0;value[j]!='\0';j++)//µÚÒ»¸öÊÇ\"£¬ËùÒÔºóÃæµÄÈ«²¿Ç°ÒÆÒ»¸ö°ÑÊ×¸ö\"¸²¸Ç
+		value[j]=value[j+1];
+	return;
+}
 
 
 
